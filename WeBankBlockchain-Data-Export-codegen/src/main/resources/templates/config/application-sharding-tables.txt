@@ -1,0 +1,21 @@
+spring.shardingsphere.datasource.names=ds
+        
+spring.shardingsphere.datasource.ds.type=com.zaxxer.hikari.HikariDataSource
+spring.shardingsphere.datasource.ds.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.shardingsphere.datasource.ds.jdbc-url=${dbUrl}
+spring.shardingsphere.datasource.ds.username=${dbUser}
+spring.shardingsphere.datasource.ds.password=${dbPassword}
+spring.shardingsphere.datasource.ds.max-active=160
+
+<%
+	 	for(var c in list){
+	 		name = c.name;	
+	 		shardingNO = c.shardingNO;
+	 		tmpNO = shardingNO - 1;
+			println("spring.shardingsphere.sharding.tables." + name + ".actual-data-nodes=ds." + name + "_$->{0.." + tmpNO + "}");
+			println("spring.shardingsphere.sharding.tables." + name + ".table-strategy.inline.sharding-column=block_height");
+			println("spring.shardingsphere.sharding.tables." + name + ".table-strategy.inline.algorithm-expression=" + name + "_$->{block_height % " + shardingNO + "}");
+			println("spring.shardingsphere.sharding.tables." + name + ".key-generator-column-name=pk_id");	 		
+	 		println();
+	 	}
+%>

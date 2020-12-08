@@ -1,0 +1,60 @@
+/**
+ * Copyright (C) 2018 WeBank, Inc. All Rights Reserved.
+ */
+package ${group}.${projectName}.generated.entity.event;
+
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.webank.blockchain.data.export.db.entity.IdEntity;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+@SuppressWarnings("serial")
+@Data
+@Accessors(chain = true)
+@Entity(name = "${table_name}")
+@Table(name = "${table_name}", indexes = { @Index(name = "block_height", columnList = "block_height"),
+        @Index(name = "block_timestamp", columnList = "block_timestamp"),
+        @Index(name = "tx_hash", columnList = "tx_hash")})
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class ${class_name} extends IdEntity {
+	@Column(name = "block_height")
+    private long blockHeight;
+    @Column(name = "tx_hash")
+	private String txHash;
+	@Column(name = "event_contract_address")
+    private String eventContractAddress;
+    <%
+	for(entry in list){
+		var javaName = entry.javaName;
+        var javaType = entry.javaType;
+        var sqlName =  entry.sqlName;
+        var entityType = entry.entityType;
+        var length = entry.length;
+        if(length>0){
+        	println("	@Column(name = \"" + sqlName + "\", length = "+ length+")");
+        }
+        else{
+        	println("	@Column(name = \"" + sqlName+ "\")");
+        }
+	%>
+	private ${entityType} ${javaName};
+	<% } %>	
+	@Column(name = "block_timestamp")
+	private Date blockTimeStamp;	
+	@UpdateTimestamp
+    @Column(name = "depot_updatetime")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date depotUpdatetime;
+}

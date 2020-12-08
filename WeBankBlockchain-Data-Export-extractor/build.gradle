@@ -1,0 +1,12 @@
+bootJar.enabled=false
+jar.enabled=true
+jar {
+    destinationDir file('dist')
+    archiveName project.name + version + '.jar'
+}
+clean {
+    println "delete ${projectDir}/dist"
+    delete "${projectDir}/dist"
+}
+
+
