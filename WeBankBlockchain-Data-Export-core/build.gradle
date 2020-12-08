@@ -1,0 +1,24 @@
+bootJar {
+    destinationDir file('dist')
+    archiveName project.name + version + '.jar'
+
+    doLast {
+        copy {
+            from file('config/contract/')
+            into 'dist/config/contract'
+        }
+        copy {
+            from file('src/main/shell/')
+            into 'dist'
+        }
+        copy {
+            from file('src/main/resources/')
+            into 'dist/config'
+        }
+    }
+}
+clean {
+    println "delete ${projectDir}/dist"
+    delete "${projectDir}/dist"
+}
+

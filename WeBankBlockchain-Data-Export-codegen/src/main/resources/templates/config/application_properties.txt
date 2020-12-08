@@ -1,0 +1,96 @@
+### Springboot server config
+server.port=${port}
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=Asia/Shanghai
+logging.file=dataexport-core.log
+logging.level.org.hibernate=ERROR 
+logging.level.org.fisco.bcos=ERROR 
+
+## Spring data jpa properties
+spring.datasource.test-on-borrow=false
+spring.datasource.test-while-idle=true
+spring.datasource.time-between-eviction-runs-millis= 3600000
+## WARN!: please don't TURN ON this option in pruduce environment. Create the tables munally. 
+## Please turn off this option in produce environment. eg.
+## spring.jpa.properties.hibernate.hbm2ddl.auto=none
+spring.jpa.properties.hibernate.hbm2ddl.auto=update
+spring.jpa.properties.hibernate.dialect=${group}.${projectName}.config.MysqlConfig
+spring.jpa.hibernate.naming.physical-strategy=${group}.${projectName}.config.DatabaseNamingStrategy
+spring.jpa.properties.hibernate.show_sql=true
+spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+spring.profiles.active=sharding-tables
+
+## System config
+system.nodeStr=${nodeStr}
+system.groupId=${groupId}
+system.configPath=config/
+system.multiLiving=${multiLiving}
+
+#######
+
+<%
+	var flag =strutil.toLowerCase (multiLiving);
+	if(flag=="true"){
+%>
+## zookeeper config
+regcenter.serverList=${serverListStr}
+regcenter.namespace=${nameSpace}
+
+## job config 
+prepareTaskJob.cron=0/${frequency} * * * * ?
+prepareTaskJob.shardingTotalCount=1
+prepareTaskJob.shardingItemParameters=0=A
+
+dataflowJob.cron=0/${frequency} * * * * ?
+dataflowJob.shardingTotalCount=8
+dataflowJob.shardingItemParameters=0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H
+		
+<%
+	}else{
+%>
+system.crawlBatchUnit=${crawlBatchUnit}
+system.frequency=${frequency}
+<%
+	}
+%>
+
+##	Monitor buttons
+#### event buttons
+#monitor.[ContractName].[EventName]CrawlerService=off
+<%
+	 	for(var contract in eventList){
+	 		name = contract.name;	
+	 		contractName = contract.contractName;
+			println("monitor." + contractName + "." + name + "CrawlerService=on");
+	 	}
+	 	println("#### method buttons");	 	
+	 	for(var m in methodList){
+	 		name = m.name;	
+	 		contractName = m.contractName;
+			println("monitor." + contractName + "." + name + "MethodCrawlerService=on");
+	 	}
+%>
+#######
+
+system.group=${group}
+system.projectName=${projectName}
+system.contractPackName=${contractPackName}
+system.contractPath=${contractPath}
+
+system.startBlockHeight=${startBlockHeight}
+system.startDate=${startDate}
+
+system.encryptType=${encryptType}
+
+button.swagger=${swagger}
+
+<%
+	if(esEnabled=="true"){
+%>
+es.enabled=${esEnabled}
+es.clusterName=${esClusterName}
+es.ip=${esIp}
+es.port=${esPort}
+<%
+	}
+%>

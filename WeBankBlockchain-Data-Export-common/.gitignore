@@ -1,0 +1,43 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+/bin/
+bin/*
+config/*
+/.gradle/
+
+
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+src/main/scripts
+src/main/resources
+
+## contracts ##
+src/main/java/com/webank/bcosexport/generated
+src/main/java/com/webank/blockchain.data.export/generated
+src/main/java/org
+my.log*
+*.log
+
+src/test/java/com/webank/webaseexport/contract/
