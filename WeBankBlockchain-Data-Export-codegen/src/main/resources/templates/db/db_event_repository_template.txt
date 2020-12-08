@@ -1,0 +1,31 @@
+/**
+ * Copyright (C) 2018 WeBank, Inc. All Rights Reserved.
+ */
+package ${group}.${projectName}.generated.repository.event;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+import ${group}.${projectName}.generated.entity.event.${class_name};
+import ${group}.${projectName}.repository.RollbackInterface;
+
+
+@Repository
+public interface ${class_name}EventRepository extends JpaRepository<${class_name}, Long>, JpaSpecificationExecutor<${class_name}>, RollbackInterface {
+	public ${class_name} findTopByOrderByBlockHeightDesc();
+	
+	@Transactional
+    @Modifying
+    @Query(value = "delete from  #{#entityName} where block_height >= ?1", nativeQuery = true)
+    public void rollback(long blockHeight);
+    
+    @Transactional
+    @Modifying
+    @Query(value = "delete from  #{#entityName} where block_height >= ?1 and block_height< ?2", nativeQuery = true)
+    public void rollback(long startBlockHeight, long endBlockHeight);
+}

@@ -70,3 +70,6 @@ hs_err_pid*
 
 ### repo ###
 config/
+src/main/java/com/webank/blockchain/wecredit
+generated
+src/main/java/org/fisco/bcos/temp

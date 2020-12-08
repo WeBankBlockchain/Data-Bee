@@ -1,0 +1,142 @@
+plugins {
+    id "org.springframework.boot" version "2.2.8.RELEASE"
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id 'eclipse'
+    id 'idea'
+    id 'maven'
+}
+
+
+allprojects {
+  repositories {
+    maven {
+        url "http://maven.aliyun.com/nexus/content/groups/public/"
+    }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://dl.bintray.com/ethereum/maven/" }
+    mavenLocal()  
+    jcenter() 
+  }
+}
+
+subprojects {
+  version = "1.6.0"
+  apply plugin: "java"
+  apply plugin: "org.springframework.boot"
+  apply plugin: "io.spring.dependency-management"
+
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+
+  def defaultEncoding = 'UTF-8'
+  tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+
+  javadoc {
+    options.encoding = defaultEncoding
+    options.addBooleanOption('Xdoclint:none', true)
+  }
+
+  compileJava.dependsOn(processResources)
+
+
+  springBoot {
+    buildInfo()
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+
+  dependencies {
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    implementation "org.springframework.boot:spring-boot-starter-web" 
+    implementation "org.springframework.boot:spring-boot-starter-aop" 
+    compile 'cn.hutool:hutool-all:5.3.7'
+    compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+    implementation ('org.fisco-bcos.java-sdk:java-sdk:2.6.1') {
+        exclude group: 'org.slf4j'
+    }
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    compile('org.springframework.boot:spring-boot-starter-data-elasticsearch')
+
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+  }
+}
+
+project(':WeBankBlockchain-Data-Export-core') {
+  dependencies {
+    implementation project(':WeBankBlockchain-Data-Export-parser')
+    implementation project(':WeBankBlockchain-Data-Export-common')
+    implementation project(':WeBankBlockchain-Data-Export-db')
+    implementation project(':WeBankBlockchain-Data-Export-extractor')
+    implementation "io.springfox:springfox-swagger2:2.9.2"
+    implementation "io.springfox:springfox-swagger-ui:2.9.2"
+    implementation('com.ibeetl:beetl:2.9.3')
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation 'mysql:mysql-connector-java'
+    implementation('org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.0.1')
+    
+    // elastic-job
+    implementation('com.dangdang:elastic-job-lite-core:2.1.5')
+    {
+        exclude group: 'log4j'
+    }
+    implementation('com.dangdang:elastic-job-lite-spring:2.1.5')
+    {
+        exclude group: 'log4j'
+    }
+   
+  }
+}
+
+project(':WeBankBlockchain-Data-Export-extractor') {
+  dependencies {
+    implementation project(':WeBankBlockchain-Data-Export-common')
+  }
+}
+
+project(':WeBankBlockchain-Data-Export-parser') {
+  dependencies {
+    implementation project(':WeBankBlockchain-Data-Export-extractor')
+    implementation project(':WeBankBlockchain-Data-Export-common')
+  }
+}
+
+project(':WeBankBlockchain-Data-Export-db') {
+  dependencies {
+    implementation project(':WeBankBlockchain-Data-Export-extractor')
+    implementation project(':WeBankBlockchain-Data-Export-common')
+    implementation project(':WeBankBlockchain-Data-Export-parser')
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation 'mysql:mysql-connector-java'
+    implementation('org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.0.1')
+
+  }
+}
+
+project(':WeBankBlockchain-Data-Export-codegen') {
+  dependencies {
+    compile('com.ibeetl:beetl:2.9.3')
+    implementation project(':WeBankBlockchain-Data-Export-common')
+  }
+}
+
+configurations {
+    all {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+

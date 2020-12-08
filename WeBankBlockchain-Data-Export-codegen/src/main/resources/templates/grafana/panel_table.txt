@@ -1,0 +1,89 @@
+{
+  "columns": [],
+  "datasource": "MySQL",
+  "fontSize": "110%",
+  "gridPos": {
+    "h": 8,
+    "w": 24,
+    "x": ${gridXPos},
+    "y": ${gridYPos}
+  },
+  "id": ${id},
+  "links": [],
+  "pageSize": 10,
+  "scroll": true,
+  "showHeader": true,
+  "sort": {
+    "col": 0,
+    "desc": true
+  },
+  "styles": [
+    {
+      "alias": "depot_updatetime",
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "pattern": "depot_updatetime",
+      "type": "number"
+    },
+    {
+      "alias": "",
+      "colorMode": "value",
+      "colors": [
+        "#73BF69",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(245, 54, 54, 0.9)"
+      ],
+      "decimals": 0,
+      "pattern": "block_height",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+     },
+    {
+      "alias": "",
+      "colorMode": "value",
+      "colors": [
+        "#73BF69",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(245, 54, 54, 0.9)"
+      ],
+      "decimals": 0,
+      "pattern": "pk_id",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+     }
+  ],
+  "targets": [
+    {
+      "format": "table",
+      "group": [],
+      "metricColumn": "none",
+      "rawQuery": true,
+      "rawSql": "select * from ${table_name} order by depot_updatetime;",
+      "refId": "A",
+      "select": [
+        [
+          {
+            "params": [
+              "value"
+            ],
+            "type": "column"
+          }
+        ]
+      ],
+      "timeColumn": "time",
+      "where": [
+        {
+          "name": "$__timeFilter",
+          "params": [],
+          "type": "macro"
+        }
+      ]
+    }
+  ],
+  "timeFrom": null,
+  "timeShift": null,
+  "title": "${title}",
+  "transform": "table",
+  "type": "table"
+}
