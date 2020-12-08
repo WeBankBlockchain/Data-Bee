@@ -62,7 +62,7 @@ WeBankBlockchain-Data-Export可以导出区块链上的基础数据，如当前�
 
 ## 贡献代码
 欢迎参与本项目的社区建设：
-- 如项目对您有帮助，欢迎点亮我们的小星星(点击项目左上方Star按钮)。
+- 如项目对您有帮助，欢迎点亮我们的小星星(点击项目右上方Star按钮)。
 - 欢迎提交代码(Pull requests)。
 - [提问和提交BUG](https://github.com/WeBankBlockchain/WeBankBlockchain-Data-Export/issues)。
 - 如果发现代码存在安全漏洞，请在[这里](https://security.webank.com)上报。
