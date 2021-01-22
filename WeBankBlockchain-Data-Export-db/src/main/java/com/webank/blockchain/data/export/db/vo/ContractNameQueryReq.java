@@ -42,7 +42,7 @@ public class ContractNameQueryReq extends CommonPageReq {
 	 * @return: CommonParaQueryPageReq       
 	 */
 	public CommonParaQueryPageReq toCommonParaQueryPageReq() {
-        CommonParaQueryPageReq req = new CommonParaQueryPageReq();
+        CommonParaQueryPageReq<String> req = new CommonParaQueryPageReq<>();
         req.setReqParaName("contractName").setReqParaValue(this.contractName).setOrder(this.getOrder())
                 .setOrderBy(this.getOrderBy()).setPageNo(this.getPageNo()).setPageSize(this.getPageSize());
         return req;

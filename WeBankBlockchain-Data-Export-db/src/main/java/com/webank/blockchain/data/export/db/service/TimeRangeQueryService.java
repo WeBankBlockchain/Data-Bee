@@ -49,6 +49,7 @@ public class TimeRangeQueryService {
      * @param repository
      * @return
      */
+    @SuppressWarnings("unchecked")
     public <T> CommonResponse getPageListByTimeRange(TimeRangeQueryReq req, JpaSpecificationExecutor<T> repository) {
         CommonTimeCondition condition = new CommonTimeCondition();
         try {
@@ -57,8 +58,6 @@ public class TimeRangeQueryService {
             log.error("DateUtil convert error: {}", e.getMessage());
             return ResponseUtils.paramError("invalid time format, " + e.getMessage());
         }
-        int pageNo = req.getPageNo();
-        int pageSize = req.getPageSize();
         PageRequest pr = (PageRequest) req.convert();
         Specification<T> spec = TimeSpecification.queryByCriteria(condition);
         Page<T> page = repository.findAll(spec, pr);

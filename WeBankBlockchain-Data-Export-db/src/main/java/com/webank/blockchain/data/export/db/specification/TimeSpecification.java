@@ -38,6 +38,7 @@ public class TimeSpecification<T> {
      * @param condition
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static Specification queryByCriteria(CommonTimeCondition condition) {
         return (root, query, cb) -> {
             List<Predicate> predicates = Lists.newArrayList();

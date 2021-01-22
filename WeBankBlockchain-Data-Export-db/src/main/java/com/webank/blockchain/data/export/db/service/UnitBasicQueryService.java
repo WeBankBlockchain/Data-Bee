@@ -49,10 +49,10 @@ public class UnitBasicQueryService {
     /**
      * Page query by parameter name and parameter value.
      * 
-     * @param UnitParaQueryPageReq
      * @param unitType
      * @return
      */
+    @SuppressWarnings("unchecked")
     public CommonResponse getPageListByReq(UnitParaQueryPageReq<String> req, String unitType) {
         String repositoryName = StringUtils.uncapitalize(req.getUnitName() + unitType);
         if (repositoryService.getJpaSpecificationExecutor(repositoryName).isPresent()) {
@@ -63,6 +63,7 @@ public class UnitBasicQueryService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public CommonResponse getPageListByReq(UnitBiParaQueryPageReq<String> req, String unitType) {
         String repositoryName = StringUtils.uncapitalize(req.getUnitName() + unitType);
         if (repositoryService.getJpaSpecificationExecutor(repositoryName).isPresent()) {
@@ -73,6 +74,7 @@ public class UnitBasicQueryService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public CommonResponse getPageListByReq(UnitSpecificationQueryPageReq req, String unitType) {
         String repositoryName = StringUtils.uncapitalize(req.getUnitName() + unitType);
         if (repositoryService.getJpaSpecificationExecutor(repositoryName).isPresent()) {
@@ -85,11 +87,11 @@ public class UnitBasicQueryService {
 
     /**
      * Page query by time range.
-     * 
-     * @param UnitTimeRangeQueryPageReq
+     *
      * @param unitType
      * @return
      */
+    @SuppressWarnings("unchecked")
     public CommonResponse getPageListByReq(UnitTimeRangeQueryPageReq req, String unitType) {
         String repositoryName = StringUtils.uncapitalize(req.getUnitName() + unitType);
         if (repositoryService.getJpaSpecificationExecutor(repositoryName).isPresent()) {
@@ -107,6 +109,7 @@ public class UnitBasicQueryService {
      * @param unitType
      * @return
      */
+    @SuppressWarnings("unchecked")
     public <T> CommonResponse find(UnitQueryPageReq<String> req, String unitType) {
         String repositoryName = StringUtils.uncapitalize(req.getUnitName() + unitType);
         if (repositoryService.getRepository(repositoryName).isPresent()) {

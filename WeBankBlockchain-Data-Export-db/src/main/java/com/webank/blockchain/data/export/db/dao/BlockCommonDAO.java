@@ -45,9 +45,10 @@ public class BlockCommonDAO {
     @Autowired
     private RepositoryService repositoryService;
 
+    @SuppressWarnings("unchecked")
     public void save(List<CommonBO> bos, String type) {
-        Map<String, List<CommonBO>> map = bos.stream().collect(Collectors.toMap(k -> k.getIdentifier(),
-                v -> Lists.newArrayList(v), (List<CommonBO> newValueList, List<CommonBO> oldValueList) -> {
+        Map<String, List<CommonBO>> map = bos.stream().collect(Collectors.toMap(CommonBO::getIdentifier,
+                Lists::newArrayList, (List<CommonBO> newValueList, List<CommonBO> oldValueList) -> {
                     oldValueList.addAll(newValueList);
                     return oldValueList;
                 }));

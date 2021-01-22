@@ -33,6 +33,7 @@ import com.webank.blockchain.data.export.common.vo.CommonResponse;
  *
  */
 @Service
+@SuppressWarnings("unchecked")
 public class BlockTxDetailInfoApiManager {
 
     @Autowired

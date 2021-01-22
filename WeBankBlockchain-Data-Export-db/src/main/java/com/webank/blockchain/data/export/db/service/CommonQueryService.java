@@ -40,6 +40,7 @@ import cn.hutool.core.date.DateException;
  *
  */
 @Service
+@SuppressWarnings("unchecked")
 public class CommonQueryService {
 
     /**

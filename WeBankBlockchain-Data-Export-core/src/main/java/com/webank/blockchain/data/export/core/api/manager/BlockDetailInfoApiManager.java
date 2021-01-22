@@ -50,7 +50,7 @@ public class BlockDetailInfoApiManager {
 
         return timeRangeQueryService.getPageListByTimeRange(req, blockDetailInfoRepository);
     }
-
+    @SuppressWarnings("unchecked")
     public CommonResponse getBlockDetailInfoByBlockHeight(BlockHeightQueryReq req) {
         return commonQueryService.getPageListByCommonReq(req.toCommonParaQueryPageReq(), blockDetailInfoRepository);
     }
