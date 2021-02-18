@@ -18,7 +18,6 @@ COMMON="${PROJECT_NAME}-common"
 CORE="${PROJECT_NAME}-core"
 DB="${PROJECT_NAME}-db"
 BASE_DIR=`pwd`
-LOG_INFO "work dir is $BASE_DIR"
 
 # functions
 function prop {
@@ -136,7 +135,8 @@ function generate_groups(){
 ### get argvs
 ver="latest"
 exec="run"
-while getopts "e:v:g:" arg
+GRADLE_EXEC="bash gradlew "
+while getopts "e:v:c:" arg
 do
   case $arg in
     e)
@@ -150,13 +150,25 @@ do
     v)
       ver=$OPTARG
       ;;
+    c)
+      execArg=$(echo "$OPTARG" | tr '[:upper:]' '[:lower:]')
+      if [ "$execArg" != "gradle" ] && [ "$execArg" != "gradlew" ]; then
+        LOG_ERROR "-c execute mode: [gradlew|gradle]"
+      elif [ "$execArg" == "gradle" ]; then
+        GRADLE_EXEC=$execArg
+        LOG_INFO "Begin to use gradle"
+      else
+        LOG_INFO "Begin to use gradle wrapper"
+      fi
+      ;;
     ?)
-      LOG_ERROR "unkonw argument\nusage: -e [build|run], -v [export_version]"
+      LOG_ERROR "unkonw argument\nusage: -e [build|run], -v [export_version], -c [gradle|gradlew]"
       exit 1
       ;;
   esac
 done
 
+LOG_INFO "work dir is $BASE_DIR"
 LOG_INFO "execute mode = $exec"
 LOG_INFO "export version = $ver"
 
@@ -427,7 +439,7 @@ LOG_INFO "copy java contract codes done."
 
 # build
 cd $BASE_DIR/../
-bash gradlew clean :$CODEGEN:bootJar
+$GRADLE_EXEC clean :$CODEGEN:bootJar
 LOG_INFO "$CODEGEN build done"
 
 # run
@@ -466,7 +478,7 @@ LOG_INFO "copy java contract codes done."
 
 
 cd $BASE_DIR/../
-bash gradlew clean :$CORE:bootJar
+$GRADLE_EXEC clean :$CORE:bootJar
 LOG_INFO "$PROJECT_NAME build done"
 cd $BASE_DIR
 rm -rf dist
