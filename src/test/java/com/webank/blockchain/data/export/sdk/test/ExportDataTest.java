@@ -1,11 +1,9 @@
 package com.webank.blockchain.data.export.sdk.test;
 
-import com.webank.blockchain.data.export.api.DataExportService;
+import com.webank.blockchain.data.export.ExportDataSDK;
 import com.webank.blockchain.data.export.common.entity.ChainInfo;
-import com.webank.blockchain.data.export.common.entity.ExportConfig;
 import com.webank.blockchain.data.export.common.entity.ExportDataSource;
 import com.webank.blockchain.data.export.common.entity.MysqlDataSource;
-import com.webank.blockchain.data.export.sdk.ExportDataSDK;
 import com.webank.blockchain.data.export.task.DataExportExecutor;
 import org.fisco.bcos.sdk.config.exceptions.ConfigException;
 import org.junit.Test;
