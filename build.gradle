@@ -60,7 +60,7 @@ sourceSets {
 
 jar {
     destinationDir file("dist/apps")
-    archiveName project.name + "-" + 'SDK-1.0.0-SNAPOSHOT' + ".jar"
+    archiveName project.name + "-" + 'SDK-1.7.0' + ".jar"
 
     exclude "**/*.properties"
 
