@@ -5,6 +5,23 @@ plugins {
     id 'java'
     id 'org.ajoberstar.grgit' version '4.1.0'
 }
+apply plugin: 'signing'
+group = 'com.webank'
+version = '1.7.0'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
 
 allprojects {
     repositories {
@@ -30,7 +47,7 @@ dependencies {
     compile 'org.elasticsearch.client:transport:7.10.2'
     compile(group:'org.apache.shardingsphere.elasticjob', name: 'elasticjob-lite-core',version:'3.0.0-alpha')
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
-
+    compile 'org.apache.logging.log4j:log4j-core:2.11.0'
     testCompile ("junit:junit:4.12")
 }
 
@@ -58,9 +75,57 @@ sourceSets {
     }
 }
 
+signing {
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name project.name
+                packaging 'jar'
+                description 'WeBankBlockchain Data-Export'
+                url 'https://github.com/WeBankBlockchain/Data-Export.git'
+                /*
+				scm {
+					url 'https://github.com/WeBankBlockchain/Data-Export.git'
+					connection 'https://github.com/WeBankBlockchain/Data-Export.git'
+				}
+                */
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'wesleywang'
+                        name 'wangyue'
+                        email 'wesleywang@webank.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
 jar {
     destinationDir file("dist/apps")
-    archiveName project.name + "-" + 'SDK-1.7.0' + ".jar"
+    archiveName project.name + "-" + '1.7.0-SNAPSHOT' + ".jar"
 
     exclude "**/*.properties"
 
@@ -109,7 +174,6 @@ clean {
 }
 
 subprojects {
-    version = "1.6.0"
     apply plugin: "java"
 
     sourceCompatibility = '1.8'
@@ -137,7 +201,7 @@ subprojects {
         compile("com.fasterxml.jackson.core:jackson-databind:2.11.0")
         compile 'org.elasticsearch.client:transport:7.10.2'
         compile(group:'org.apache.shardingsphere.elasticjob', name: 'elasticjob-lite-core',version:'3.0.0-alpha')
-
+        compile 'org.apache.logging.log4j:log4j-core:2.11.0'
         testCompile ("junit:junit:4.12")
     }
 
