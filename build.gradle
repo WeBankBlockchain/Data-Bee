@@ -10,18 +10,29 @@ group = 'com.webank'
 version = '1.7.0'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
+
+
 javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
 }
 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
 
 task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier = 'javadoc'
 }
 
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
 
 allprojects {
     repositories {
@@ -75,53 +86,51 @@ sourceSets {
     }
 }
 
-signing {
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            pom.project {
-                name project.name
-                packaging 'jar'
-                description 'WeBankBlockchain Data-Export'
-                url 'https://github.com/WeBankBlockchain/Data-Export.git'
-                /*
-				scm {
-					url 'https://github.com/WeBankBlockchain/Data-Export.git'
-					connection 'https://github.com/WeBankBlockchain/Data-Export.git'
-				}
-                */
-
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'wesleywang'
-                        name 'wangyue'
-                        email 'wesleywang@webank.com'
-                    }
-                }
-            }
-        }
-    }
-}
+//signing {
+//    required { gradle.taskGraph.hasTask("uploadArchives") }
+//    sign configurations.archives
+//}
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            beforeDeployment { deployment -> signing.signPom(deployment) }
+//
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//
+//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+//                authentication(userName: sonatypeUsername, password: sonatypePassword)
+//            }
+//            pom.project {
+//                name project.name
+//                packaging 'jar'
+//                description 'WeBankBlockchain Data-Export'
+//                url 'https://github.com/WeBankBlockchain/Data-Export.git'
+//
+//				scm {
+//					url 'https://github.com/WeBankBlockchain/Data-Export.git'
+//					connection 'https://github.com/WeBankBlockchain/Data-Export.git'
+//				}
+//
+//
+//                licenses {
+//                    license {
+//                        name 'The Apache License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id 'wesleywang'
+//                        name 'wangyue'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 jar {
     destinationDir file("dist/apps")
