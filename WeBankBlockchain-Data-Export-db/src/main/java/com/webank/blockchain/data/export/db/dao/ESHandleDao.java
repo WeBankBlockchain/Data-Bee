@@ -43,6 +43,7 @@ import java.util.List;
  */
 @Component
 @ConditionalOnProperty(name = "es.enabled", havingValue = "true")
+@SuppressWarnings("deprecation")
 public class ESHandleDao {
 
     @Autowired
