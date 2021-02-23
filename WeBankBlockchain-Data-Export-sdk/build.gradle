@@ -1,0 +1,272 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven'
+    id 'java'
+    id 'org.ajoberstar.grgit' version '4.1.0'
+}
+apply plugin: 'signing'
+group = 'com.webank'
+version = '1.7.0'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://oss.sonatype.org/service/local/staging/deploy/maven2"}
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        jcenter()
+    }
+}
+dependencies {
+    compile ('cn.hutool:hutool-all:5.3.7')
+    compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+    compile('org.fisco-bcos.java-sdk:java-sdk:2.6.1')
+    compile 'commons-codec:commons-codec:1.4'
+    compile group: "org.apache.shardingsphere", name: "shardingsphere-jdbc-core", version: '5.0.0-alpha'
+    compile('ch.qos.logback:logback-core:1.2.3')
+    compile('ch.qos.logback:logback-classic:1.2.3')
+    compileOnly ('org.projectlombok:lombok:1.18.10')
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    compile (group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1')
+    compile("com.fasterxml.jackson.core:jackson-databind:2.11.0")
+    compile 'org.elasticsearch.client:transport:7.10.2'
+    compile(group:'org.apache.shardingsphere.elasticjob', name: 'elasticjob-lite-core',version:'3.0.0-alpha')
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    compile 'org.apache.logging.log4j:log4j-core:2.11.0'
+    testCompile ("junit:junit:4.12")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "WeBankBlockchain-Data-Export-common/src/main/java"
+            srcDir "WeBankBlockchain-Data-Export-core/src/main/java"
+            srcDir "WeBankBlockchain-Data-Export-db/src/main/java"
+            srcDir "WeBankBlockchain-Data-Export-parser/src/main/java"
+            srcDir "src/main/java"
+        }
+
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/test/java')
+        }
+        resources.srcDir file('src/main/resources')
+    }
+}
+
+//signing {
+//    required { gradle.taskGraph.hasTask("uploadArchives") }
+//    sign configurations.archives
+//}
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            beforeDeployment { deployment -> signing.signPom(deployment) }
+//
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//
+//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+//                authentication(userName: sonatypeUsername, password: sonatypePassword)
+//            }
+//            pom.project {
+//                name project.name
+//                packaging 'jar'
+//                description 'WeBankBlockchain Data-Export'
+//                url 'https://github.com/WeBankBlockchain/Data-Export.git'
+//
+//				scm {
+//					url 'https://github.com/WeBankBlockchain/Data-Export.git'
+//					connection 'https://github.com/WeBankBlockchain/Data-Export.git'
+//				}
+//
+//
+//                licenses {
+//                    license {
+//                        name 'The Apache License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id 'wesleywang'
+//                        name 'wangyue'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+
+jar {
+    destinationDir file("dist/apps")
+    archiveName project.name + "-" + '1.7.0-SNAPSHOT' + ".jar"
+
+    exclude "**/*.properties"
+
+    manifest {
+        try {
+            def repo = grgit.open(currentDir: project.rootDir)
+            if (repo != null) {
+                def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                def branch = repo.branch.getCurrent().getName()
+                def commit = repo.head().getAbbreviatedId(40)
+
+                attributes(["Implementation-Timestamp": date,
+                            "Git-Branch"              : branch,
+                            "Git-Commit"              : commit
+                ])
+
+                logger.info("  Commit : ")
+                logger.info("  => date: {}", date)
+                logger.info("  => branch: {}", branch)
+                logger.info("  => commit: {}", commit)
+            }
+        } catch (Exception e) {
+            logger.warn(' .git not exist, cannot found commit info, e: {}', e)
+        }
+    } from sourceSets.main.output
+
+    doLast {
+        copy {
+            from file("src/main/resources/")
+            into "dist/conf"
+        }
+        copy {
+            from configurations.runtime
+            into "dist/lib"
+        }
+        copy {
+            from file("build/libs/")
+            into "dist/apps"
+        }
+    }
+}
+
+clean {
+    println "delete ${projectDir}/dist"
+    delete "${projectDir}/dist"
+}
+
+subprojects {
+    apply plugin: "java"
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+    def defaultEncoding = 'UTF-8'
+    tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+
+    javadoc {
+        options.encoding = defaultEncoding
+        options.addBooleanOption('Xdoclint:none', true)
+    }
+
+    dependencies {
+        compile ('cn.hutool:hutool-all:5.3.7')
+        compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+        compile('org.fisco-bcos.java-sdk:java-sdk:2.6.1')
+        compile 'commons-codec:commons-codec:1.4'
+        compile group: "org.apache.shardingsphere", name: "shardingsphere-jdbc-core", version: '5.0.0-alpha'
+        compile('ch.qos.logback:logback-core:1.2.3')
+        compile('ch.qos.logback:logback-classic:1.2.3')
+        compileOnly ('org.projectlombok:lombok:1.18.10')
+        annotationProcessor 'org.projectlombok:lombok:1.18.10'
+        compile (group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1')
+        compile("com.fasterxml.jackson.core:jackson-databind:2.11.0")
+        compile 'org.elasticsearch.client:transport:7.10.2'
+        compile(group:'org.apache.shardingsphere.elasticjob', name: 'elasticjob-lite-core',version:'3.0.0-alpha')
+        compile 'org.apache.logging.log4j:log4j-core:2.11.0'
+        testCompile ("junit:junit:4.12")
+    }
+
+    jar {
+        destinationDir file("dist/apps")
+        archiveName project.name + "-" + version + ".jar"
+
+        exclude "**/*.xml"
+        exclude "**/*.properties"
+
+        doLast {
+            copy {
+                from file("src/test/resources/")
+                into "dist/conf"
+            }
+            copy {
+                from configurations.runtime
+                into "dist/lib"
+            }
+            copy {
+                from file("build/libs/")
+                into "dist/apps"
+            }
+        }
+    }
+}
+
+
+
+project(':WeBankBlockchain-Data-Export-core') {
+    dependencies {
+        implementation project(':WeBankBlockchain-Data-Export-parser')
+        implementation project(':WeBankBlockchain-Data-Export-common')
+        implementation project(':WeBankBlockchain-Data-Export-db')
+    }
+}
+
+project(':WeBankBlockchain-Data-Export-parser') {
+    dependencies {
+        implementation project(':WeBankBlockchain-Data-Export-common')
+    }
+}
+
+project(':WeBankBlockchain-Data-Export-db') {
+    dependencies {
+        implementation project(':WeBankBlockchain-Data-Export-common')
+        implementation project(':WeBankBlockchain-Data-Export-parser')
+        compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    }
+}
+
+
+configurations {
+    all {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
