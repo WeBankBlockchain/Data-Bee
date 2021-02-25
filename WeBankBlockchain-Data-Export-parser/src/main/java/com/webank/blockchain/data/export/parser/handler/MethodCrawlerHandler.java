@@ -74,6 +74,13 @@ public class MethodCrawlerHandler {
             JsonTransactionResponse transaction = to.get();
             Optional<TransactionReceipt> opt = ExportConstant.getCurrentContext().getClient()
                             .getTransactionReceipt(transaction.getHash()).getTransactionReceipt();
+            if (opt.isPresent()) {
+                TransactionReceipt receipt = opt.get();
+                TxRawDataBO txRawDataBO = getTxRawDataBO(block, transaction, receipt);
+                TxReceiptRawDataBO txReceiptRawDataBO = getTxReceiptRawDataBO(block, receipt);
+                txRawDataBOList.add(txRawDataBO);
+                txReceiptRawDataBOList.add(txReceiptRawDataBO);
+            }
             Optional<String> contractName = TransactionService.getContractNameByTransaction(transaction, txHashContractAddressMapping);
             if (!contractName.isPresent()){
                 continue;
@@ -96,11 +103,7 @@ public class MethodCrawlerHandler {
                 // get block tx detail info
                 BlockTxDetailInfoBO blockTxDetailInfo =
                         getBlockTxDetailInfo(block, transaction, receipt, methodMetaInfo);
-                TxRawDataBO txRawDataBO = getTxRawDataBO(block, transaction, receipt);
-                TxReceiptRawDataBO txReceiptRawDataBO = getTxReceiptRawDataBO(block, receipt);
                 blockTxDetailInfoList.add(blockTxDetailInfo);
-                txRawDataBOList.add(txRawDataBO);
-                txReceiptRawDataBOList.add(txReceiptRawDataBO);
                 txHashContractNameMapping.putIfAbsent(blockTxDetailInfo.getTxHash(),
                         blockTxDetailInfo.getContractName());
             }
