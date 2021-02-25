@@ -16,6 +16,6 @@ public class ChainInfo {
     private int groupId;
     private String certPath;
     //0-ECDSA,1-SM
-    private int cryptoTypeConfig = 0;
+    private int cryptoTypeConfig;
     private String rpcUrl;
 }
