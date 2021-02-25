@@ -46,7 +46,7 @@ allprojects {
 dependencies {
     compile ('cn.hutool:hutool-all:5.3.7')
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
-    compile('org.fisco-bcos.java-sdk:java-sdk:2.6.1')
+    compile('org.fisco-bcos.java-sdk:java-sdk:2.7.0')
     compile 'commons-codec:commons-codec:1.4'
     compile group: "org.apache.shardingsphere", name: "shardingsphere-jdbc-core", version: '5.0.0-alpha'
     compile('ch.qos.logback:logback-core:1.2.3')
@@ -60,6 +60,7 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
     compile 'org.apache.logging.log4j:log4j-core:2.11.0'
     testCompile ("junit:junit:4.12")
+    compile 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.0'
 }
 
 sourceSets {

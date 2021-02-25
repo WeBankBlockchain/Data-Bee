@@ -76,7 +76,7 @@ public class ContractCrawlerHandler {
             // get constructor function transaction by judging if transaction's param named to is null
             if (transaction.getTo() == null || transaction.getTo().equals(ContractConstants.EMPTY_ADDRESS)) {
                 String contractAddress = receipt.getContractAddress();
-                String input = ExportConstant.getCurrentContext().getClient().getCode(contractAddress).getCode();
+                String input = ExportConstant.getCurrentContext().getClient().getCode(contractAddress);
                 Map.Entry<String, ContractDetail> entry = ContractConstructorService.getConstructorNameByCode(input);
                 log.debug("blockNumber: {}, input: {}", receipt.getBlockNumber(), input);
                 if (entry == null){

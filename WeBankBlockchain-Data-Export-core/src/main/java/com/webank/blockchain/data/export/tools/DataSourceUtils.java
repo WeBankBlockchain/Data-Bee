@@ -110,7 +110,9 @@ public class DataSourceUtils {
             if (table.equals(ExportConstant.BLOCK_TASK_POOL_TABLE) || table.equals(ExportConstant.CONTRACT_INFO_TABLE)) {
                 continue;
             }
-            table = tablePrefix + table + tablePostfix;
+            if (ExportConstant.tables.contains(table)) {
+                table = tablePrefix + table + tablePostfix;
+            }
             // table rule
             ShardingTableRuleConfiguration orderTableRuleConfig = new
                     ShardingTableRuleConfiguration(table, "ds${0..1}." + table + "${0..1}");

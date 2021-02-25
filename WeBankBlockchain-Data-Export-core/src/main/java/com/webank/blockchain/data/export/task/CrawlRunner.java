@@ -101,11 +101,11 @@ public class CrawlRunner {
                 return;
             }
         }
-        if (context.getChainInfo().getNodeStr() == null) {
-            log.error("nodeStr is not set，please set it ！！！ ");
+        if (context.getChainInfo().getRpcUrl() == null && context.getChainInfo().getNodeStr() == null) {
+            log.error("rpcUrl and nodeStr are not set，please set it ！！！ ");
             return;
         }
-        if (context.getChainInfo().getCertPath() == null) {
+        if (context.getChainInfo().getNodeStr() != null && context.getChainInfo().getCertPath() == null) {
             log.error("certPath is not set，please set it ！！！ ");
             return;
         }

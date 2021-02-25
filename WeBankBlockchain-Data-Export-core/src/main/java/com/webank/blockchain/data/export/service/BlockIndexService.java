@@ -66,7 +66,7 @@ public class BlockIndexService {
     private static long getBlockIndexByStartDate(Date startDate) throws IOException {
         DataExportContext context = ExportConstant.getCurrentContext();
         Block beginBlock = getBlock(new BigInteger("0"));
-        BigInteger blockNumber = context.getClient().getBlockNumber().getBlockNumber();
+        BigInteger blockNumber = context.getClient().getBlockNumber();
         Block endBlock = getBlock(blockNumber);
 
         Date beginDate = DateUtils.hexStrToDate(beginBlock.getTimestamp());
@@ -116,7 +116,7 @@ public class BlockIndexService {
         Stopwatch stopwatch = Stopwatch.createStarted();
         log.debug("get block number: {}", blockHeightNumber);
         DataExportContext context = ExportConstant.getCurrentContext();
-        Block block = context.getClient().getBlockByNumber(blockHeightNumber, true).getBlock();
+        Block block = context.getClient().getBlockByNumber(blockHeightNumber);
         Stopwatch st1 = stopwatch.stop();
         log.info("get block:{} succeed, eth.getBlock useTime: {}", blockHeightNumber,
                 st1.elapsed(TimeUnit.MILLISECONDS));

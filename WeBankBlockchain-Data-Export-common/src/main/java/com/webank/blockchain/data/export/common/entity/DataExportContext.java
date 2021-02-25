@@ -29,7 +29,7 @@ public class DataExportContext {
 
     private ExportConfig config;
 
-    private Client client;
+    private ChainClient client;
 
     private boolean autoCreateTable;
 

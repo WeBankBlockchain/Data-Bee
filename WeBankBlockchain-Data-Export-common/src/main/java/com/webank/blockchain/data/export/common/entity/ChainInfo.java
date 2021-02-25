@@ -15,4 +15,7 @@ public class ChainInfo {
     private String nodeStr;
     private int groupId;
     private String certPath;
+    //0-ECDSA,1-SM
+    private int cryptoTypeConfig = 0;
+    private String rpcUrl;
 }

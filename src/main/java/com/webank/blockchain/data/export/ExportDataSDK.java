@@ -20,7 +20,7 @@ public class ExportDataSDK {
      * @return the executor
      * @throws ConfigException
      */
-    public static DataExportExecutor create(ExportDataSource dataSource, ChainInfo chainInfo) throws ConfigException {
+    public static DataExportExecutor create(ExportDataSource dataSource, ChainInfo chainInfo) throws Exception {
         return DataExportService.create(dataSource,chainInfo, new ExportConfig());
     }
 
@@ -32,7 +32,7 @@ public class ExportDataSDK {
      * @return the executor
      * @throws ConfigException
      */
-    public static DataExportExecutor create(ExportDataSource dataSource, ChainInfo chainInfo, ExportConfig config) throws ConfigException {
+    public static DataExportExecutor create(ExportDataSource dataSource, ChainInfo chainInfo, ExportConfig config) throws Exception {
         return DataExportService.create(dataSource,chainInfo,config);
     }
 

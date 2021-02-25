@@ -15,13 +15,13 @@ package com.webank.blockchain.data.export.service;
 
 import com.google.common.collect.Lists;
 import com.webank.blockchain.data.export.common.constants.BlockConstants;
+import com.webank.blockchain.data.export.common.entity.ChainClient;
 import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.enums.BlockCertaintyEnum;
 import com.webank.blockchain.data.export.common.enums.TxInfoStatusEnum;
 import com.webank.blockchain.data.export.db.entity.BlockTaskPool;
 import com.webank.blockchain.data.export.task.DataPersistenceManager;
 import lombok.extern.slf4j.Slf4j;
-import org.fisco.bcos.sdk.client.Client;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -51,8 +51,8 @@ public class BlockPrepareService {
     }
 
     public static long getCurrentBlockHeight() throws IOException {
-        Client client = ExportConstant.getCurrentContext().getClient();
-        BigInteger blockNumber = client.getBlockNumber().getBlockNumber();
+        ChainClient client = ExportConstant.getCurrentContext().getClient();
+        BigInteger blockNumber = client.getBlockNumber();
         long total = blockNumber.longValue();
         log.debug("Current chain block number is:{}", blockNumber);
         return total;

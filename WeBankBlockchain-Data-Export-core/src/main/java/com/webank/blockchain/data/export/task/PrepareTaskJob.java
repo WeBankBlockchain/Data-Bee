@@ -88,7 +88,7 @@ public class PrepareTaskJob implements SimpleJob {
             log.error("depot Error, {}", e.getMessage());
         }
         try {
-            BigInteger blockNumber = context.getClient().getBlockNumber().getBlockNumber();
+            BigInteger blockNumber = context.getClient().getBlockNumber();
             long total = blockNumber.longValue();
             log.info("Current chain block number is:{}", total);
             long height = BlockPrepareService.getTaskPoolHeight();

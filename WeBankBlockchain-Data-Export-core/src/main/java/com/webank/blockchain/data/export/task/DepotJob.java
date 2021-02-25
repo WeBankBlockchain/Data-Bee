@@ -80,8 +80,7 @@ public class DepotJob implements DataflowJob<Block> {
         DataPersistenceManager.setCurrentManager(dataPersistenceManager);
         ContractConstants.setCurrentContractMaps(mapsInfo);
 
-        BigInteger blockNumber = ExportConstant.getCurrentContext().getClient()
-                .getBlockNumber().getBlockNumber();
+        BigInteger blockNumber = ExportConstant.getCurrentContext().getClient().getBlockNumber();
         BlockDepotService.processDataSequence(data, blockNumber.longValue());
     }
 
