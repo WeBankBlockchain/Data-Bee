@@ -34,7 +34,7 @@ public class TxReceiptRawDataRepository implements RollbackInterface{
 
     private DaoTemplate txReceiptRawDataDao;
 
-    private final String tableName = ExportConstant.TX_RECEIPT_RAW_DATA_TABLE;
+    private String tableName;
 
     
     /*
@@ -56,7 +56,7 @@ public class TxReceiptRawDataRepository implements RollbackInterface{
     public void rollback(long startBlockHeight, long endBlockHeight){
         try {
             Db.use(ExportConstant.getCurrentContext().getDataSource()).execute(
-                    "delete from block_raw_data where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
+                    "delete from "+ tableName + " where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
         } catch (SQLException e) {
             log.error(" TxRawDataRepository rollback failed ", e);
         }
@@ -64,7 +64,9 @@ public class TxReceiptRawDataRepository implements RollbackInterface{
 
     public void save(TxReceiptRawData txReceiptRawData) {
         try {
-            txReceiptRawDataDao.addForGeneratedKey(Entity.parse(txReceiptRawData,true,true));
+            Entity entity = Entity.parse(txReceiptRawData,true,true);
+            entity.setTableName(tableName);
+            txReceiptRawDataDao.addForGeneratedKey(entity);
         } catch (SQLException e) {
             log.error(" TxRawDataRepository save failed ", e);
         }

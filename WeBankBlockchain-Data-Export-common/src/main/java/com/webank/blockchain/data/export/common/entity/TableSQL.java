@@ -130,7 +130,7 @@ public class TableSQL {
             "  `logs` longtext,\n" +
             "  `logs_bloom` longtext,\n" +
             "  `message` varchar(255) DEFAULT NULL,\n" +
-            "  `output` varchar(255) DEFAULT NULL,\n" +
+            "  `output` longtext,\n" +
             "  `receipt_proof` longtext,\n" +
             "  `root` varchar(255) DEFAULT NULL,\n" +
             "  `status` varchar(255) DEFAULT NULL,\n" +

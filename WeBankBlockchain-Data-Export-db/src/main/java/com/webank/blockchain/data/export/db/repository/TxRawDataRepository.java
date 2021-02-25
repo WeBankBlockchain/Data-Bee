@@ -35,7 +35,7 @@ public class TxRawDataRepository implements RollbackInterface{
 
     private DaoTemplate txRawDataDao;
 
-    private final String tableName = ExportConstant.TX_RAW_DATA_TABLE;
+    private String tableName;
 
     /*
      * @see com.webank.blockchain.data.export.sys.db.repository.RollbackInterface#rollback(long)
@@ -54,7 +54,7 @@ public class TxRawDataRepository implements RollbackInterface{
     public void rollback(long startBlockHeight, long endBlockHeight){
         try {
             Db.use(ExportConstant.getCurrentContext().getDataSource()).execute(
-                    "delete from block_raw_data where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
+                    "delete from " + tableName + " where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
         } catch (SQLException e) {
             log.error(" TxRawDataRepository rollback failed ", e);
         }
@@ -62,7 +62,9 @@ public class TxRawDataRepository implements RollbackInterface{
 
     public void save(TxRawData txRawData) {
         try {
-            txRawDataDao.addForGeneratedKey(Entity.parse(txRawData,true,true));
+            Entity entity = Entity.parse(txRawData,true,true);
+            entity.setTableName(tableName);
+            txRawDataDao.addForGeneratedKey(entity);
         } catch (SQLException e) {
             log.error(" TxRawDataRepository save failed ", e);
         }

@@ -37,9 +37,13 @@ public class ContractInfoRepository {
 
     private DaoTemplate contractDao;
 
+    private String tableName;
+
     public void save(ContractInfo contractInfo) {
         try {
-            contractDao.add(Entity.parse(contractInfo,true,true));
+            Entity entity = Entity.parse(contractInfo,true,true);
+            entity.setTableName(tableName);
+            contractDao.add(entity);
         } catch (SQLException e) {
             log.error("ContractInfoRepository save failed ", e);
         }

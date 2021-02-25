@@ -9,6 +9,7 @@ import com.webank.blockchain.data.export.common.bo.data.BlockInfoBO;
 import com.webank.blockchain.data.export.common.bo.data.ContractInfoBO;
 import com.webank.blockchain.data.export.common.constants.ContractConstants;
 import com.webank.blockchain.data.export.common.entity.DataExportContext;
+import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.enums.DataType;
 import com.webank.blockchain.data.export.db.dao.BlockDetailInfoDAO;
 import com.webank.blockchain.data.export.db.dao.BlockRawDataDAO;
@@ -43,13 +44,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_DETAIL_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_DETAIL_INFO_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_RAW_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_RAW_DATA_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_TASK_POOL_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_TASK_POOL_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_TX_DETAIL_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.BLOCK_TX_DETAIL_INFO_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.CONTRACT_INFO_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.CONTRACT_INFO_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.DEPLOYED_ACCOUNT_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.DEPLOYED_ACCOUNT_INFO_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.TX_RAW_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.TX_RAW_DATA_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.TX_RECEIPT_RAW_DAO;
+import static com.webank.blockchain.data.export.common.entity.ExportConstant.TX_RECEIPT_RAW_DATA_TABLE;
 import static com.webank.blockchain.data.export.common.entity.ExportConstant.tables;
 
 /**
@@ -167,43 +176,46 @@ public class DataPersistenceManager {
 
     public void buildRepository() {
         Map<String, DaoTemplate> daoTemplateMap = buildDaoMap(context);
+
+        String tablePrefix = ExportConstant.getCurrentContext().getConfig().getTablePrefix();
+        String tablePostfix = ExportConstant.getCurrentContext().getConfig().getTablePostfix();
         blockTaskPoolRepository = new BlockTaskPoolRepository(
-                daoTemplateMap.get(BLOCK_TASK_POOL_DAO));
+                daoTemplateMap.get(BLOCK_TASK_POOL_DAO), tablePrefix + BLOCK_TASK_POOL_TABLE + tablePostfix);
         rollbackOneInterfaceList.add(blockTaskPoolRepository);
         List<DataType> blackTables = context.getConfig().getDataTypeBlackList();
 
         if (!blackTables.contains(DataType.BLOCK_DETAIL_INFO_TABLE)) {
             blockDetailInfoRepository = new BlockDetailInfoRepository(
-                    daoTemplateMap.get(BLOCK_DETAIL_DAO));
+                    daoTemplateMap.get(BLOCK_DETAIL_DAO), tablePrefix + BLOCK_DETAIL_INFO_TABLE + tablePostfix);
             rollbackOneInterfaceList.add(blockDetailInfoRepository);
         }
         if (!blackTables.contains(DataType.BLOCK_RAW_DATA_TABLE)) {
             blockRawDataRepository = new BlockRawDataRepository(daoTemplateMap.get(
-                    BLOCK_RAW_DAO));
+                    BLOCK_RAW_DAO), tablePrefix + BLOCK_RAW_DATA_TABLE + tablePostfix);
             rollbackOneInterfaceList.add(blockRawDataRepository);
         }
         if (!blackTables.contains(DataType.BLOCK_TX_DETAIL_INFO_TABLE)) {
             blockTxDetailInfoRepository = new BlockTxDetailInfoRepository(
-                    daoTemplateMap.get(BLOCK_TX_DETAIL_DAO));
+                    daoTemplateMap.get(BLOCK_TX_DETAIL_DAO), tablePrefix + BLOCK_TX_DETAIL_INFO_TABLE + tablePostfix);
             rollbackOneInterfaceList.add(blockTxDetailInfoRepository);
         }
         if (!blackTables.contains(DataType.TX_RAW_DATA_TABLE)) {
             txRawDataRepository = new TxRawDataRepository(
-                    daoTemplateMap.get(TX_RAW_DAO));
+                    daoTemplateMap.get(TX_RAW_DAO), tablePrefix + TX_RAW_DATA_TABLE + tablePostfix);
             rollbackOneInterfaceList.add(txRawDataRepository);
         }
         if (!blackTables.contains(DataType.TX_RECEIPT_RAW_DATA_TABLE)) {
             txReceiptRawDataRepository = new TxReceiptRawDataRepository(
-                    daoTemplateMap.get(TX_RECEIPT_RAW_DAO));
+                    daoTemplateMap.get(TX_RECEIPT_RAW_DAO), tablePrefix + TX_RECEIPT_RAW_DATA_TABLE + tablePostfix);
             rollbackOneInterfaceList.add(txReceiptRawDataRepository);
         }
         if (!blackTables.contains(DataType.DEPLOYED_ACCOUNT_INFO_TABLE)) {
             deployedAccountInfoRepository = new DeployedAccountInfoRepository(
-                    daoTemplateMap.get(DEPLOYED_ACCOUNT_DAO));
+                    daoTemplateMap.get(DEPLOYED_ACCOUNT_DAO), tablePrefix + DEPLOYED_ACCOUNT_INFO_TABLE + tablePostfix);
         }
         if (!blackTables.contains(DataType.CONTRACT_INFO_TABLE)) {
             contractInfoRepository = new ContractInfoRepository(
-                    daoTemplateMap.get(CONTRACT_INFO_DAO));
+                    daoTemplateMap.get(CONTRACT_INFO_DAO), tablePrefix + CONTRACT_INFO_TABLE + tablePostfix);
         }
 
     }
@@ -211,11 +223,13 @@ public class DataPersistenceManager {
     public Map<String, DaoTemplate> buildDaoMap(DataExportContext context) {
         Db db = Db.use(context.getDataSource());
         Map<String, DaoTemplate> daoTemplateMap = new ConcurrentHashMap<>();
+        String tablePrefix = ExportConstant.getCurrentContext().getConfig().getTablePrefix();
+        String tablePostfix = ExportConstant.getCurrentContext().getConfig().getTablePostfix();
         tables.forEach(table -> {
             if (DataType.getTables(context.getConfig().getDataTypeBlackList()).contains(table)) {
                 return;
             }
-            DaoTemplate daoTemplate = new DaoTemplate(table, "pk_id", db);
+            DaoTemplate daoTemplate = new DaoTemplate(tablePrefix + table + tablePostfix, "pk_id", db);
             daoTemplateMap.put(table + "_dao", daoTemplate);
         });
         return daoTemplateMap;

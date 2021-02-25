@@ -42,7 +42,7 @@ public class BlockTxDetailInfoRepository implements RollbackInterface {
 
     private DaoTemplate blockTxDetailInfoDao;
 
-    private final String tableName = ExportConstant.BLOCK_TX_DETAIL_INFO_TABLE;
+    private String tableName;
 
     /**
      * Get block transaction info according to block height, return BlockTxDetailInfo object list.
@@ -104,7 +104,7 @@ public class BlockTxDetailInfoRepository implements RollbackInterface {
     public void rollback(long startBlockHeight, long endBlockHeight){
         try {
             Db.use(ExportConstant.getCurrentContext().getDataSource()).execute(
-                    "delete from block_raw_data where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
+                    "delete from "+ tableName +" where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
         } catch (SQLException e) {
             log.error(" BlockTxDetailInfoRepository rollback failed ", e);
         }
@@ -112,7 +112,9 @@ public class BlockTxDetailInfoRepository implements RollbackInterface {
 
     public void save(BlockTxDetailInfo blockTxDetailInfo) {
         try {
-            blockTxDetailInfoDao.addForGeneratedKey(Entity.parse(blockTxDetailInfo,true,true));
+            Entity entity = Entity.parse(blockTxDetailInfo,true,true);
+            entity.setTableName(tableName);
+            blockTxDetailInfoDao.addForGeneratedKey(entity);
         } catch (SQLException e) {
             log.error(" BlockDetailInfoRepository save failed ", e);
         }

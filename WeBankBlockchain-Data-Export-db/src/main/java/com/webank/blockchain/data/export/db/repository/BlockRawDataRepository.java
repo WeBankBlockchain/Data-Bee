@@ -34,7 +34,7 @@ public class BlockRawDataRepository implements RollbackInterface {
 
     private DaoTemplate blockRawDataDao;
 
-    private final String tableName = ExportConstant.BLOCK_RAW_DATA_TABLE;
+    private final String tableName;
 
 
     public void rollback(long blockHeight){
@@ -48,7 +48,7 @@ public class BlockRawDataRepository implements RollbackInterface {
     public void rollback(long startBlockHeight, long endBlockHeight){
         try {
             Db.use(ExportConstant.getCurrentContext().getDataSource()).execute(
-                    "delete from block_raw_data where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
+                    "delete from " + tableName +" where block_height >= ? and block_height< ?",startBlockHeight,endBlockHeight);
         } catch (SQLException e) {
             log.error(" BlockRawDataRepository rollback failed ", e);
         }
@@ -57,7 +57,9 @@ public class BlockRawDataRepository implements RollbackInterface {
 
     public void save(BlockRawData blockRawData) {
         try {
-            blockRawDataDao.addForGeneratedKey(Entity.parse(blockRawData,true,true));
+            Entity entity = Entity.parse(blockRawData,true,true);
+            entity.setTableName(tableName);
+            blockRawDataDao.addForGeneratedKey(entity);
         } catch (SQLException e) {
             log.error(" BlockRawDataRepository save failed ", e);
         }
