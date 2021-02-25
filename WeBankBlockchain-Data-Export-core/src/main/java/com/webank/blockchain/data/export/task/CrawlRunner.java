@@ -14,12 +14,17 @@
 package com.webank.blockchain.data.export.task;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import com.webank.blockchain.data.export.common.bo.contract.ContractMapsInfo;
 import com.webank.blockchain.data.export.common.constants.BlockConstants;
 import com.webank.blockchain.data.export.common.constants.ContractConstants;
+import com.webank.blockchain.data.export.common.entity.ChainClient;
+import com.webank.blockchain.data.export.common.entity.ChainInfo;
+import com.webank.blockchain.data.export.common.entity.ChannelClient;
 import com.webank.blockchain.data.export.common.entity.ContractInfo;
 import com.webank.blockchain.data.export.common.entity.DataExportContext;
 import com.webank.blockchain.data.export.common.entity.ExportConstant;
+import com.webank.blockchain.data.export.common.entity.RpcHttpClient;
 import com.webank.blockchain.data.export.common.enums.DataType;
 import com.webank.blockchain.data.export.parser.contract.ContractParser;
 import com.webank.blockchain.data.export.service.BlockAsyncService;
@@ -27,11 +32,17 @@ import com.webank.blockchain.data.export.service.BlockCheckService;
 import com.webank.blockchain.data.export.service.BlockDepotService;
 import com.webank.blockchain.data.export.service.BlockIndexService;
 import com.webank.blockchain.data.export.service.BlockPrepareService;
+import com.webank.blockchain.data.export.tools.ClientUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.client.protocol.response.BcosBlock.Block;
+import org.fisco.bcos.sdk.config.exceptions.ConfigException;
+import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.transaction.codec.decode.TransactionDecoderService;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -62,17 +73,42 @@ public class CrawlRunner {
         this.context = context;
     }
 
-    public void export() {
+    public void export() throws ConfigException {
         checkConfig();
         if (!runSwitch.get()){
             log.info("data export config check failed, task already stop");
             return;
         }
+        buildClient();
         //abi、bin parse
         ContractMapsInfo mapsInfo = ContractParser.initContractMaps(ExportConstant.getCurrentContext().getConfig().getContractInfoList());
         ContractConstants.setCurrentContractMaps(mapsInfo);
         DataPersistenceManager.getCurrentManager().buildDataStore();
         handle();
+    }
+
+    private void buildClient(){
+        ChainClient chainClient;
+        ChainInfo chainInfo = context.getChainInfo();
+        if (chainInfo.getRpcUrl() != null) {
+            JsonRpcHttpClient jsonRpcHttpClient = null;
+            try {
+                jsonRpcHttpClient = new JsonRpcHttpClient(new URL(chainInfo.getRpcUrl()));
+            } catch (MalformedURLException e) {
+                log.error("rpcHttp client build failed , reason : ", e);
+            }
+            chainClient = new RpcHttpClient(jsonRpcHttpClient, chainInfo.getGroupId(),
+                    new CryptoSuite(chainInfo.getCryptoTypeConfig()));
+        } else {
+            Client client = null;
+            try {
+                client = ClientUtil.getClient(chainInfo);
+            } catch (ConfigException e) {
+                log.error("channel client build failed , reason : ", e);
+            }
+            chainClient = new ChannelClient(client);
+        }
+        context.setClient(chainClient);
     }
 
     private void checkConfig() {

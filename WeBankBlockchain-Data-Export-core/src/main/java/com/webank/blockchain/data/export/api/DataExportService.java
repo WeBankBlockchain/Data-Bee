@@ -47,16 +47,6 @@ public class DataExportService {
                     .collect(Collectors.toMap(ContractInfo::getContractName, e->e));
             context.setContractInfoMap(contractInfoMap);
         }
-        ChainClient chainClient;
-        if (chainInfo.getRpcUrl() != null) {
-            JsonRpcHttpClient jsonRpcHttpClient = new JsonRpcHttpClient(new URL(chainInfo.getRpcUrl()));
-            chainClient = new RpcHttpClient(jsonRpcHttpClient, chainInfo.getGroupId(),
-                    new CryptoSuite(chainInfo.getCryptoTypeConfig()));
-        } else {
-            Client client = ClientUtil.getClient(chainInfo);
-            chainClient = new ChannelClient(client);
-        }
-        context.setClient(chainClient);
         context.setChainInfo(chainInfo);
         context.setConfig(config);
         context.setExportDataSource(dataSource);
