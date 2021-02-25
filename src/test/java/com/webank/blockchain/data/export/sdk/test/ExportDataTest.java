@@ -19,7 +19,7 @@ import java.util.List;
 public class ExportDataTest {
 
     @Test
-    public void shardingTest() throws ConfigException, InterruptedException {
+    public void shardingTest() throws Exception, InterruptedException {
         //配置其中[]内容配置即可测试
         MysqlDataSource mysqlDataSourc = MysqlDataSource.builder()
                 .jdbcUrl("jdbc:mysql://[ip]:3306/[database]")
@@ -50,7 +50,7 @@ public class ExportDataTest {
     }
 
     @Test
-    public void singleTest() throws ConfigException, InterruptedException {
+    public void singleTest() throws Exception, InterruptedException {
         MysqlDataSource mysqlDataSourc = MysqlDataSource.builder()
                 .jdbcUrl("jdbc:mysql://[ip]:[port]/[database]")
                 .pass("password")
