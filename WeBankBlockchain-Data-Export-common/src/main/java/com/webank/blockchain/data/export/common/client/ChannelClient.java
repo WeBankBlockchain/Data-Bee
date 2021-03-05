@@ -1,10 +1,14 @@
-package com.webank.blockchain.data.export.common.entity;
+package com.webank.blockchain.data.export.common.client;
 
-import cn.hutool.core.lang.Chain;
+import com.webank.blockchain.data.export.common.entity.ChainInfo;
+import com.webank.blockchain.data.export.common.entity.ExportConstant;
+import com.webank.blockchain.data.export.tools.ClientUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.client.protocol.response.BcosBlock;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransaction;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransactionReceipt;
+import org.fisco.bcos.sdk.config.exceptions.ConfigException;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 
 import java.math.BigInteger;
@@ -14,13 +18,19 @@ import java.math.BigInteger;
  * @Description:
  * @date 2021/2/25
  */
-
+@Slf4j
 public class ChannelClient implements ChainClient {
 
     private Client client;
 
-    public ChannelClient(Client client) {
-        this.client = client;
+    public ChannelClient() throws ConfigException {
+        ChainInfo chainInfo = ExportConstant.getCurrentContext().getChainInfo();
+        try {
+            client = ClientUtil.getClient(chainInfo);
+        } catch (ConfigException e) {
+            log.error("channel client build failed , reason : ", e);
+            throw e;
+        }
     }
 
     @Override

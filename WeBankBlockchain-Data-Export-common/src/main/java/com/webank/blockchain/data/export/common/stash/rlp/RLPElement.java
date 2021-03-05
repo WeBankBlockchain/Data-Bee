@@ -11,25 +11,17 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webank.blockchain.data.export.common.tools;
+package com.webank.blockchain.data.export.common.stash.rlp;
+
+import java.io.Serializable;
 
 /**
- * BoolUtils
+ * Wrapper class for decoded elements from an RLP encoded byte array.
  *
- * @Description: BoolUtils
- * @author maojiayu
- * @data Mar 12, 2019 3:14:31 PM
- *
+ * @author Roman Mandeleil
+ * @since 01.04.2014
  */
-public class BoolUtils {
+public interface RLPElement extends Serializable {
 
-    public static boolean toBoolean(Boolean bool) {
-        return bool.booleanValue();
-    }
-
-    public static boolean toBoolean(Object obj) {
-        Boolean bool = (Boolean) obj;
-        return bool.booleanValue();
-    }
-
+    byte[] getRLPData();
 }

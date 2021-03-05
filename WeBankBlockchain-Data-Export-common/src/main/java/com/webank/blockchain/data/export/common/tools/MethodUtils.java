@@ -13,7 +13,7 @@
  */
 package com.webank.blockchain.data.export.common.tools;
 
-import com.webank.blockchain.data.export.common.entity.ChainClient;
+import com.webank.blockchain.data.export.common.client.ChainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.fisco.bcos.sdk.abi.ABICodecException;
@@ -24,7 +24,6 @@ import org.fisco.bcos.sdk.abi.wrapper.ABIDefinitionFactory;
 import org.fisco.bcos.sdk.abi.wrapper.ABIObject;
 import org.fisco.bcos.sdk.abi.wrapper.ABIObjectFactory;
 import org.fisco.bcos.sdk.abi.wrapper.ContractABIDefinition;
-import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 
 import java.lang.reflect.Field;

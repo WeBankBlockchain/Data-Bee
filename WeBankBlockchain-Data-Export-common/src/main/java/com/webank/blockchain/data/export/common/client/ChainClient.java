@@ -1,4 +1,4 @@
-package com.webank.blockchain.data.export.common.entity;
+package com.webank.blockchain.data.export.common.client;
 
 
 import org.fisco.bcos.sdk.client.protocol.response.BcosBlock;
@@ -25,5 +25,5 @@ public interface ChainClient {
 
     BcosTransaction getTransactionByHash(String transactionHash);
 
-    BcosTransactionReceipt getTransactionReceipt(String hash);
+    BcosTransactionReceipt getTransactionReceipt(String transactionHash);
 }

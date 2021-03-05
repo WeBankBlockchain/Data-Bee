@@ -14,6 +14,9 @@
 package com.webank.blockchain.data.export.service;
 
 import com.webank.blockchain.data.export.common.bo.data.BlockInfoBO;
+import com.webank.blockchain.data.export.common.client.ChainClient;
+import com.webank.blockchain.data.export.common.client.StashClient;
+import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.enums.TxInfoStatusEnum;
 import com.webank.blockchain.data.export.db.entity.BlockTaskPool;
 import com.webank.blockchain.data.export.task.DataPersistenceManager;
@@ -86,6 +89,18 @@ public class BlockDepotService {
                     .setSyncStatusByBlockHeight((short) TxInfoStatusEnum.ERROR.getStatus(), new Date(),
                     b.getNumber().longValue());
         }
+        clearCache(b.getNumber().longValue());
+    }
+
+    private static void clearCache(long blockNumber) {
+        ChainClient chainClient = ExportConstant.getCurrentContext().getClient();
+        if (!(chainClient instanceof StashClient)) {
+            return;
+        }
+        StashClient stashClient = (StashClient) chainClient;
+        stashClient.getBlockDataParser().getReceiptCache().remove(blockNumber);
+        stashClient.getBlockDataParser().getBlockCache().remove(blockNumber);
+        log.info("stash parser block cache clear success , block number is " + blockNumber);
     }
 
 }

@@ -1,7 +1,9 @@
-package com.webank.blockchain.data.export.common.entity;
+package com.webank.blockchain.data.export.common.client;
 
 import cn.hutool.core.util.HexUtil;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
+import com.webank.blockchain.data.export.common.entity.ChainInfo;
+import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.client.protocol.model.JsonTransactionResponse;
@@ -12,6 +14,8 @@ import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author wesleywang
@@ -27,6 +31,18 @@ public class RpcHttpClient implements ChainClient{
     private int group;
 
     private CryptoSuite cryptoSuite;
+
+    public RpcHttpClient() throws MalformedURLException {
+        ChainInfo chainInfo = ExportConstant.getCurrentContext().getChainInfo();
+        try {
+            client = new JsonRpcHttpClient(new URL(chainInfo.getRpcUrl()));
+        } catch (MalformedURLException e) {
+            log.error("rpcHttp client build failed , reason : ", e);
+            throw e;
+        }
+        group = chainInfo.getGroupId();
+        cryptoSuite = new CryptoSuite(chainInfo.getCryptoTypeConfig());
+    }
 
     @Override
     public BcosBlock.Block getBlockByNumber(BigInteger blockNumber) {
