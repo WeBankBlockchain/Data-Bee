@@ -3,14 +3,12 @@ package com.webank.blockchain.data.export.common.client;
 import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.stash.DataStashMysqlRepo;
 import com.webank.blockchain.data.export.common.stash.StashBlockDataParser;
-import com.webank.blockchain.data.export.tools.DataSourceUtils;
 import lombok.Data;
 import org.fisco.bcos.sdk.client.protocol.response.BcosBlock;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransaction;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransactionReceipt;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 
-import javax.sql.DataSource;
 import java.math.BigInteger;
 
 /**

@@ -1,4 +1,4 @@
-package com.webank.blockchain.data.export.tools;
+package com.webank.blockchain.data.export.common.tools;
 
 import com.google.common.collect.Maps;
 import com.webank.blockchain.data.export.common.entity.ChainInfo;

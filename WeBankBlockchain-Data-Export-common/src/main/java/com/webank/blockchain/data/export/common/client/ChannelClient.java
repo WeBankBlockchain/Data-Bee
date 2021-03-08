@@ -2,7 +2,7 @@ package com.webank.blockchain.data.export.common.client;
 
 import com.webank.blockchain.data.export.common.entity.ChainInfo;
 import com.webank.blockchain.data.export.common.entity.ExportConstant;
-import com.webank.blockchain.data.export.tools.ClientUtil;
+import com.webank.blockchain.data.export.common.tools.ClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.client.protocol.response.BcosBlock;
