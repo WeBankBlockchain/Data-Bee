@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.webank.blockchain.data.export.common.entity.DataExportContext;
+import com.webank.blockchain.data.export.common.entity.ExportConfig;
 import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.stash.rlp.ByteUtil;
 import com.webank.blockchain.data.export.common.stash.rlp.RLP;
@@ -104,7 +105,7 @@ public class BlockV2RC2 {
             endPos = (int) ByteUtil.byte4UnsignToLong(transactions, (int) (4*i+4));
             byte[] sub = ByteUtil.subBytes(transactions, offset+startPos, endPos-startPos);
             TransactionDetail t = new TransactionDetail((RLPList) RLP.decode2(sub).get(0));
-            t.setHash(Hex.encodeHexString(new CryptoSuite(0) .hash(sub)));
+            t.setHash(Hex.encodeHexString(ExportConstant.getCurrentContext().getClient().getCryptoSuite().hash(sub)));
             list.add(t);
         }
         return list;

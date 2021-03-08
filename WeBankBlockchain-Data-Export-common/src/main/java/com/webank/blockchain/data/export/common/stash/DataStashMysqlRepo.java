@@ -39,10 +39,14 @@ public class DataStashMysqlRepo {
 
     public long queryBlockHeight(String transactionHash){
         try {
-            return stashDb.queryNumber(
-                    "select _num_ from _sys_tx_hash_2_block_ where _hash_ = ? ", transactionHash).longValue();
+            Number height =  stashDb.queryNumber(
+                    "select _num_ from _sys_tx_hash_2_block_ where _hash_ = ? ", transactionHash);
+            if (height == null) {
+                return -1;
+            }
+            return height.longValue();
         } catch (SQLException e) {
-            log.error(" DataStashMysqlRepo queryBlock failed ", e);
+            log.warn(" DataStashMysqlRepo queryBlock failed ", e);
         }
         return -1;
     }
@@ -59,7 +63,7 @@ public class DataStashMysqlRepo {
 
     public String queryCode(String contractAddress) {
         try {
-            String contractTable = "c_12" + contractAddress.replace("0x","");
+            String contractTable = "c_" + contractAddress.replace("0x","");
             return stashDb.queryString(
                     "select value from " + contractTable  + " where  " + contractTable +".key = ?", "code");
         } catch (SQLException e) {
