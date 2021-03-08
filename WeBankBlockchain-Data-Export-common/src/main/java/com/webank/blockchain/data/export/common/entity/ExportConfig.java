@@ -47,7 +47,7 @@ public class ExportConfig {
 
     private String namePostfix = "";
 
-    private List<ContractInfo> ContractInfoList;
+    private List<ContractInfo> contractInfoList;
 
     private boolean multiLiving;
     private String zookeeperServiceLists;

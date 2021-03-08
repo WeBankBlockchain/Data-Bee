@@ -59,15 +59,15 @@ public class DataStashMysqlRepo {
 
     public String queryCode(String contractAddress) {
         try {
-            List<String> tables =  MetaUtil.getTables(ExportConstant.getCurrentContext().getStashDataSource());
-            String contractTable = "c_" + contractAddress;
-            if (!tables.contains(contractTable)) {
+            String contractTable = "c_12" + contractAddress.replace("0x","");
+            return stashDb.queryString(
+                    "select value from " + contractTable  + " where  " + contractTable +".key = ?", "code");
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1146 || e.getMessage().contains("doesn't exist")) {
+                log.warn("the stash table contractAddress: {} not find ", contractAddress);
                 return null;
             }
-            return stashDb.queryString(
-                    "select value from " + contractTable  + " where key = code");
-        } catch (SQLException e) {
-            log.error(" DataStashMysqlRepo queryCode failed ", e);
+            log.warn("DataStashMysqlRepo queryCode failed ", e);
         }
         return null;
     }

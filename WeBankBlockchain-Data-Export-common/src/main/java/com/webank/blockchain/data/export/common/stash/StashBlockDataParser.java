@@ -4,7 +4,6 @@ import com.webank.blockchain.data.export.common.entity.ExportConstant;
 import com.webank.blockchain.data.export.common.stash.entity.BlockHeader;
 import com.webank.blockchain.data.export.common.stash.entity.BlockV2RC2;
 import com.webank.blockchain.data.export.common.stash.entity.TransactionDetail;
-import com.webank.blockchain.data.export.common.stash.rlp.ByteUtil;
 import com.webank.blockchain.data.export.common.tools.AddressUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +13,9 @@ import org.fisco.bcos.sdk.client.protocol.response.BcosBlockHeader;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransaction;
 import org.fisco.bcos.sdk.client.protocol.response.BcosTransactionReceipt;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
-import org.fisco.bcos.sdk.crypto.signature.ECDSASignatureResult;
-import org.fisco.bcos.sdk.crypto.signature.SignatureResult;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.codec.encode.TransactionEncoderService;
-import org.fisco.bcos.sdk.transaction.model.gas.DefaultGasProvider;
 import org.fisco.bcos.sdk.transaction.model.po.RawTransaction;
-import org.fisco.bcos.sdk.utils.Hex;
 import org.fisco.bcos.sdk.utils.Numeric;
 
 import java.math.BigInteger;
@@ -205,7 +200,7 @@ public class StashBlockDataParser {
 
     private String getFrom(TransactionDetail transactionDetail){
         String from = null;
-        if (ExportConstant.getCurrentContext().getChainInfo().getCryptoTypeConfig() == 0) {
+        if (ExportConstant.getCurrentContext().getStashInfo().getCryptoTypeConfig() == 0) {
             byte[] encodedTransaction = encoderService.encode(RawTransaction.createTransaction(transactionDetail.getNonce(),
                     transactionDetail.getGasPrice(),
                     transactionDetail.getGas(),

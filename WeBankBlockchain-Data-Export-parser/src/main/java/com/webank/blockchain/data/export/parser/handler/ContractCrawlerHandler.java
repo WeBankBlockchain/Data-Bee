@@ -77,6 +77,10 @@ public class ContractCrawlerHandler {
             if (transaction.getTo() == null || transaction.getTo().equals(ContractConstants.EMPTY_ADDRESS)) {
                 String contractAddress = receipt.getContractAddress();
                 String input = ExportConstant.getCurrentContext().getClient().getCode(contractAddress);
+                if (input == null) {
+                    log.warn("blockNumber: {}, contractAddress: {}, getCode not find the input", receipt.getBlockNumber(), contractAddress);
+                    return Optional.empty();
+                }
                 Map.Entry<String, ContractDetail> entry = ContractConstructorService.getConstructorNameByCode(input);
                 log.debug("blockNumber: {}, input: {}", receipt.getBlockNumber(), input);
                 if (entry == null){
