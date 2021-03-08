@@ -256,6 +256,12 @@ project(':WeBankBlockchain-Data-Export-parser') {
     }
 }
 
+project(':WeBankBlockchain-Data-Export-common') {
+    dependencies {
+        compile('org.fisco-bcos.java-sdk:java-sdk:2.7.0')
+    }
+}
+
 project(':WeBankBlockchain-Data-Export-db') {
     dependencies {
         implementation project(':WeBankBlockchain-Data-Export-common')
