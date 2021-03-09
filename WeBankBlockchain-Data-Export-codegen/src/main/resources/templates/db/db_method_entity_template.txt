@@ -45,7 +45,7 @@ public class ${class_name} extends IdEntity {
         var length = entry.length;
 		if(length>10240){
               println("   @Lob")
-              println("	@Column(name = \"" + sqlName + "\")");
+              println("	  @Column(name = \"" + sqlName + "\")");
         }
         else{
         	println("	@Column(name = \"" + sqlName+ "\")");
