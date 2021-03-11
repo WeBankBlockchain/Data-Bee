@@ -54,12 +54,12 @@ public class BlockCheckService {
         List<BlockTaskPool> unnormalRecords = blockTaskPoolRepository.findUnNormalRecords();
         if (!CollectionUtil.isEmpty(unnormalRecords)) {
             log.info("sync block detect {} error transactions.", unnormalRecords.size());
-            unnormalRecords.parallelStream().map(BlockTaskPool::getBlockHeight).forEach(e -> {
-                log.error("Block {} sync error, and begin to rollback.", e);
-                RollBackService.rollback(e, e + 1);
+            for(BlockTaskPool taskPool : unnormalRecords) {
+                log.error("Block {} sync error, and begin to rollback.", taskPool.getBlockHeight());
+                RollBackService.rollback(taskPool.getBlockHeight(), taskPool.getBlockHeight() + 1);
                 blockTaskPoolRepository.setSyncStatusByBlockHeight((short) TxInfoStatusEnum.INIT.getStatus(),
-                        new Date(), e);
-            });
+                        new Date(), taskPool.getBlockHeight());
+            }
         }
     }
 
