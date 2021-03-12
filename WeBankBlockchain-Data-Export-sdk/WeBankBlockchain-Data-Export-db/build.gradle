@@ -1,0 +1,6 @@
+clean {
+    println "delete ${projectDir}/dist"
+    delete "${projectDir}/dist"
+}
+
+

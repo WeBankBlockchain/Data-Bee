@@ -1,0 +1,5 @@
+rootProject.name = 'data-export-sdk'
+include 'WeBankBlockchain-Data-Export-core',
+        'WeBankBlockchain-Data-Export-parser',
+        'WeBankBlockchain-Data-Export-common',
+        'WeBankBlockchain-Data-Export-db'

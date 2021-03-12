@@ -1,2 +1,2 @@
 rootProject.name = 'Data-Export'
-include 'WeBankBlockchain-Data-Export-core', 'WeBankBlockchain-Data-Export-extractor', 'WeBankBlockchain-Data-Export-parser', 'WeBankBlockchain-Data-Export-common', 'WeBankBlockchain-Data-Export-db', 'WeBankBlockchain-Data-Export-codegen'
+include 'WeBankBlockchain-Data-Export-core', 'WeBankBlockchain-Data-Export-extractor', 'WeBankBlockchain-Data-Export-parser', 'WeBankBlockchain-Data-Export-common', 'WeBankBlockchain-Data-Export-db', 'WeBankBlockchain-Data-Export-codegen','WeBankBlockchain-Data-Export-sdk'

@@ -20,7 +20,7 @@ allprojects {
 }
 
 subprojects {
-  version = "1.6.0"
+  version = "1.7.0"
   apply plugin: "java"
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
