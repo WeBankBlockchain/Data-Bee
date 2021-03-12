@@ -35,7 +35,7 @@ public enum JavaTypeEnum {
     BIGINTEGER("BigInteger", "Long", "bigint", "BigIntegerUtils.toLong"),
     Long("long", "Long", "bigint", "BigIntegerUtils.toLong"),
     BOOL("Boolean", "String", "varchar(8)", "String.valueOf"),
-    STRING("String", "String", "varchar(4096)", "String.valueOf"),
+    STRING("String", "String", "varchar(4096)", "JsonUtils.toJson"),
     ByteArray("byte[]", "String", "varchar(10240)", "String.valueOf" ),
     LISTByteArray("List<byte[]>", "String", "varchar(10240)", "String.valueOf" ),
     LISTString("List<String>", "String", "varchar(10240)", "String.valueOf" ),
