@@ -6,6 +6,7 @@ package ${group}.${projectName}.generated.entity.method;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import com.webank.blockchain.data.export.db.entity.IdEntity;
