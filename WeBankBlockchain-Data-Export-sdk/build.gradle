@@ -10,6 +10,7 @@ group = 'com.webank'
 version = '1.7.0'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
+bootJar.enabled=false
 
 
 javadoc {
